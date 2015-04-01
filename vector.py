@@ -29,6 +29,11 @@ class Vector:
         components = [a/scalar for a in self.components]
         return Vector(components)
 
+    def dot(self, other):
+        '''Return the dot product of self and other'''
+        self.check_other(other, 'dot')
+        return sum([a*b for a,b in zip(self.components, other.components)])
+
     def check_other(self, other, operation):
         '''Raise an error if other is not a compatible vector'''
         if not isinstance(other, Vector):
