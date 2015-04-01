@@ -34,6 +34,11 @@ class Vector:
         self.check_other(other, 'dot')
         return sum([a*b for a,b in zip(self.components, other.components)])
 
+    def orthogonal(self, other):
+        '''Return True if self and other are orthogonal'''
+        self.check_other(other, 'orthogonal')
+        return self.dot(other) == 0
+
     def check_other(self, other, operation):
         '''Raise an error if other is not a compatible vector'''
         if not isinstance(other, Vector):
