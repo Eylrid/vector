@@ -39,6 +39,11 @@ class Vector:
         self.check_other(other, 'orthogonal')
         return self.dot(other) == 0
 
+    def angle(self, other):
+        '''Return the angle between self and other'''
+        self.check_other(other, 'angle')
+        return math.acos(self.dot(other)/(self.length()*other.length()))
+
     def check_other(self, other, operation):
         '''Raise an error if other is not a compatible vector'''
         if not isinstance(other, Vector):
