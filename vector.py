@@ -93,14 +93,33 @@ class Matrix(tuple):
         item.width = len(item)
         return item
 
-    def __getitem__(self, *args):
-        result = tuple.__getitem__(self, *args)
-        if not isinstance(result, Vector):
-            try:
-                result = Matrix(result)
-            except TypeError:
-                pass
-        return result
+    def __getitem__(self, index, *args, **kwargs):
+        if isinstance(index, int):
+            #integer index, return vector
+            return tuple.__getitem__(self, index, *args, **kwargs)
+        elif isinstance(index, slice):
+            #slice index, return matrix
+            return Matrix(tuple.__getitem__(self, index, *args, **kwargs))
+        elif isinstance(index, tuple):
+            #multidimensional index or slice, slice matrix and vectors
+            if len(index) != 2:
+                raise DimensionError('multidimensional slicing of Matrix only supports 2 dimensional slicing')
 
-    def __getslice__(self, *args):
-        return self.__getitem__(slice(*args))
+            xindex = index[0]
+            yindex = index[1]
+            if isinstance(xindex, int):
+                return self[xindex][yindex]
+            elif isinstance(xindex, slice):
+                if isinstance(yindex, int):
+                    return Vector([i[yindex] for i in self[xindex]])
+                elif isinstance(yindex, slice):
+                    return Matrix([i[yindex] for i in self[xindex]])
+                else:
+                    raise TypeError('invalid index type')
+            else:
+                raise TypeError('invalid index type')
+        else:
+            raise TypeError('invalid index type')
+
+    def __getslice__(self, *args, **kwargs):
+        return self.__getitem__(slice(*args, **kwargs))
