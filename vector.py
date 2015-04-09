@@ -5,7 +5,10 @@ class Vector(tuple):
     def __new__(cls, components):
         if any([not isinstance(i, Number) for i in components]):
             raise ValueError('Vector components must be numbers')
-        return tuple.__new__(cls, components)
+        item = tuple.__new__(cls, components)
+        item.dimensions = len(item)
+        item.length = math.sqrt(sum([i**2 for i in item]))
+        return item
 
     def __repr__(self):
         return '<' + ', '.join([str(i) for i in self]) + '>'
@@ -45,30 +48,22 @@ class Vector(tuple):
     def angle(self, other):
         '''Return the angle between self and other'''
         self.check_other(other, 'angle')
-        return math.acos(self.dot(other)/(self.length()*other.length()))
+        return math.acos(self.dot(other)/(self.length*other.length))
 
     def component_along(self, other):
         '''Return the component of self along other'''
         self.check_other(other, 'component_along')
-        return self.dot(other)/other.length()
+        return self.dot(other)/other.length
 
     def check_other(self, other, operation):
         '''Raise an error if other is not a compatible vector'''
         if not isinstance(other, Vector):
             raise TypeError("unsupported operand type(s) for %s: 'Vector' and '%s'" %(operation, type(other).__name__))
-        if self.dimensions() != other.dimensions():
+        if self.dimensions != other.dimensions:
             raise ValueError('vectors are of different dimensions')
-
-    def dimensions(self):
-        '''Returns the number of dimensions the vector is defined for'''
-        return len(self)
-
-    def length(self):
-        '''Returns the length of the vector'''
-        return math.sqrt(sum([i**2 for i in self]))
 
     def direction(self):
         '''Returns a new unit vector with the same direction as self'''
-        length = self.length()
+        length = self.length
         components = [i/length for i in self]
         return Vector(components)
