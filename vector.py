@@ -79,3 +79,28 @@ class Vector(tuple):
         length = self.length
         components = [i/length for i in self]
         return Vector(components)
+
+
+class Matrix(tuple):
+    def __new__(cls, vectors):
+        if any([not isinstance(i, Vector) for i in vectors]):
+            raise TypeError('Matrix components must be vectors')
+        height = vectors[0].dimensions
+        if any([i.dimensions != height  for i in vectors]):
+            raise DimensionError('Vectors of different dimensions')
+        item = tuple.__new__(cls, vectors)
+        item.height = height
+        item.width = len(item)
+        return item
+
+    def __getitem__(self, *args):
+        result = tuple.__getitem__(self, *args)
+        if not isinstance(result, Vector):
+            try:
+                result = Matrix(result)
+            except TypeError:
+                pass
+        return result
+
+    def __getslice__(self, *args):
+        return self.__getitem__(slice(*args))
