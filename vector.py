@@ -1,7 +1,10 @@
 import math
+from numbers import Number
 
 class Vector(tuple):
     def __new__(cls, components):
+        if any([not isinstance(i, Number) for i in components]):
+            raise ValueError('Vector components must be numbers')
         return tuple.__new__(cls, components)
 
     def __repr__(self):
