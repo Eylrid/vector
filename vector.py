@@ -44,6 +44,11 @@ class Vector:
         self.check_other(other, 'angle')
         return math.acos(self.dot(other)/(self.length()*other.length()))
 
+    def component_along(self, other):
+        '''Return the component of self along other'''
+        self.check_other(other, 'component_along')
+        return self.dot(other)/other.length()
+
     def check_other(self, other, operation):
         '''Raise an error if other is not a compatible vector'''
         if not isinstance(other, Vector):
