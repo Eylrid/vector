@@ -10,6 +10,15 @@ class Vector(tuple):
         item.length = math.sqrt(sum([i**2 for i in item]))
         return item
 
+    def __getitem__(self, *args):
+        result = tuple.__getitem__(self, *args)
+        if isinstance(result, tuple):
+            result = Vector(result)
+        return result
+
+    def __getslice__(self, *args):
+        return self.__getitem__(slice(*args))
+
     def __repr__(self):
         return '<' + ', '.join([str(i) for i in self]) + '>'
 
