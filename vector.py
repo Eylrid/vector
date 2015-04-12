@@ -123,3 +123,41 @@ class Matrix(tuple):
 
     def __getslice__(self, *args, **kwargs):
         return self.__getitem__(slice(*args, **kwargs))
+
+
+class SquareMatrix(Matrix):
+    def __new__(cls, vectors):
+        item = Matrix.__new__(cls, vectors)
+        if item.width != item.height:
+            raise DimensionError('matrix not square')
+        item.size = item.width
+        return item
+
+    def determinant(self):
+        if self.size == 1:
+            return self[0,0]
+        else:
+            determinant = 0
+            bottom = self[1:]
+            for i, entry in enumerate(self[0]):
+                if entry == 0: continue #Term is 0. Cofactor does not matter.
+                cofactor = self.cofactor(0, i)
+                determinant += entry * cofactor
+
+            return determinant
+
+    def cofactor(self, x, y):
+        sign = self.sign(x,y)
+        minor = self.minor(x,y)
+        return sign*minor
+
+    def sign(self, x, y):
+        return (-1)**(x+y)
+
+    def minor(self, x, y):
+        vectors = []
+        for i, vector in enumerate(self):
+            if i == x: continue #Vector being removed
+            vector = Vector(tuple(vector[:y])+tuple(vector[y+1:]))
+            vectors.append(vector)
+        return SquareMatrix(vectors).determinant()
