@@ -67,6 +67,18 @@ class Vector(tuple):
         self.check_other(other, 'component_along')
         return self.dot(other)/other.length
 
+    def cross(self, other):
+        '''
+        Find the cross product of self and other
+        and return as a new vector
+        '''
+        if self.dimensions != 3:
+            raise DimensionError('cross product only supported for 3d vectors')
+        self.check_other(other, 'cross')
+
+        matrix = SquareMatrix((Vector((0,0,0)), self, other))
+        return Vector([matrix.cofactor(0,i)  for i in range(3)])
+
     def check_other(self, other, operation):
         '''Raise an error if other is not a compatible vector'''
         if not isinstance(other, Vector):
